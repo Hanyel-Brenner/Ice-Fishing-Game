@@ -1,3 +1,4 @@
+
 export function renderSquare(gl, positionBuffer, colorBuffer, rectangleData, rectangleColor){
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     setRectangleVertices(gl, rectangleData[0], rectangleData[1], rectangleData[2], rectangleData[3]);

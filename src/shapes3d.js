@@ -1,20 +1,11 @@
 import {setCircleVertices, setCircleColor} from './shapes2d.js';
 
-export function createMatrix(translation, rotation, translation2){
+export function rotateObjectMatrixY(object, rotationAngle, translation2){
+    var translation = [ -object[0], -object[1], -object[2]]
     var matrix = mat4.create();
     mat4.translate(matrix, matrix,translation2);
-    switch(rotation.type){
-        case 'x':
-            mat4.rotateX(matrix, matrix,rotation.angle);
-            break;
-        case 'y':
-            mat4.rotateY(matrix, matrix,rotation.angle);
-            break;
-        case 'z':
-            mat4.rotateZ(matrix, matrix,rotation.angle);
-            break;
-    }
-    mat4.translate(matrix, matrix,translation);
+    mat4.rotateY(matrix, matrix,rotationAngle);
+    mat4.translate(matrix, matrix, translation);
     return matrix;
 }
 

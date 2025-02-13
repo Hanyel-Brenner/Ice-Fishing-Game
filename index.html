@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
     
     <script src="/src/gl-matrix-min.js" defer></script>
+    <script type="module" src="/src/scene.js" defer></script>
+    <script type="module" src="/src/colors.js" defer></script>
     <script type ="module" src="/src/renderFunctions.js" defer></script>
     <script type ="module" src="/src/input.js" defer></script>
     <script type ="module" src="/src/camera.js" defer></script>
@@ -15,6 +17,7 @@
     <script type ="module" src="/src/shapes3d.js" defer></script>
     <script type ="module" src="/src/shaderProgram.js" defer></script>
     <script type ="module" src="/src/utils.js" defer></script>
+    <script type ="module" src="/src/gameState.js" defer></script>
     <script type ="module" src="/src/main.js" defer></script>
 
     <script id="vertexShader" type="text">
@@ -50,9 +53,16 @@
             gl_FragColor = vec4(vColor,1.0);
         }
     </script>
-    
+
 </head>
 <body align = "center">
     <canvas id="canvas" width="500" height="500"></canvas>
+    <h1 id = "gameState"></h1>
+    <script type="module">
+        import * as gameState from './src/gameState.js'
+        const game = document.getElementById("gameState");
+        setInterval( () => {game.innerHTML = gameState.getTime()}, 100)
+
+    </script>
 </body>
 </html>

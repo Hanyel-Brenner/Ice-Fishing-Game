@@ -1,13 +1,17 @@
 import {generateShader, generateProgram} from './shaderProgram.js';
 import { keyboardPressDown, keyboardPressUp, mouseTrack } from './input.js';
-import {setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, createMatrix, applyTransformation, setLandscapeVertices} from './shapes3d.js';
+import {setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, rotateObjectMatrixY , applyTransformation, setLandscapeVertices} from './shapes3d.js';
 import * as camera from './camera.js';
-import {degToRad, get3DViewingMatrix, getPerspectiveMatrix} from './utils.js';
+import {degToRad} from './utils.js';
 import { renderCylinder, renderCube } from './renderFunctions.js';
+import {colors} from './colors.js'
+import { getFinalMatrix } from './scene.js';
+import {setTime} from './gameState.js'
+
+setTime();
 
 const N_OF_CIRCLE_POINTS = 1000;
 const MAX_POINTS = 3;
-
 const color = [[1.0, 0.0, 0.0],  //front, red
                 [0.0, 1.0, 0.0],  //left, green
                 [0.0 ,0.0, 1.0], //back, blue
@@ -29,14 +33,14 @@ var cubeNormal = setCubeNormals();
 /* LANDSCAPE DATA*/
 var landscapePosition = setLandscapeVertices(200, 0.5);
 var landscapeColor = setCubeColors(color2);
-var landscapeMat = createMatrix( [0.0, -0.5, 0.0] ,{ type: 'y', angle: degToRad(0)}, [0.0, 0.0, 0.0]);
+var landscapeMat = rotateObjectMatrixY( landscapePosition, degToRad(45), [200, -0.5, 0.0]);
 landscapePosition = applyTransformation(landscapePosition, landscapeMat);
 /* CYLINDER DATA*/
 var rodPosition = setCylinderVertices([0.9, 0.9, 0.0],[0.9, 0.0,-0.8], 0.05, N_OF_CIRCLE_POINTS);
 var rodColor = setCylinderColor([0.0, 1.0, 0.0], N_OF_CIRCLE_POINTS); 
 var rodReelPosition = setCylinderVertices( [ 0.95, 0.1,-0.6], [ 0.99, 0.1 ,-0.7], 0.07, N_OF_CIRCLE_POINTS);
 var rodReelColor = setCylinderColor([0.57, 1.0, 0.33], N_OF_CIRCLE_POINTS);
-var rodReelMat = createMatrix([-0.95, -0.1, 0.6], {type : 'y', angle : degToRad(90)}, [0.99, 0.1, -0.6 ]);
+var rodReelMat = rotateObjectMatrixY( rodReelPosition, degToRad(90), [0.95, 0.1,-0.6]);
 rodReelPosition = applyTransformation(rodReelPosition, rodReelMat);
 
 var light = [0.5, 0.0, -0.5];
@@ -99,9 +103,6 @@ function main() {
     const lightDirectionLoc = gl.getUniformLocation(program, 'uLightDirection');
     gl.uniform3fv(lightDirectionLoc, light);
 
-/*
-*clear screen
-*/
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -118,12 +119,7 @@ function main() {
     var z_near = -1.0;
     var z_far = -200.0
 
-    var cameraMatrix = mat4.create();
-    var persMatrix = mat4.create();
-    var lookAt = mat4.create();
-    var model = mat4.create();
     var matrix = mat4.create();
-    var lightMatrix = mat4.create();
 
     console.log("sum of vertices :"+(landscapePosition.length+cubePosition.length+rodPosition.length+rodReelPosition.length));
     console.log("sum of color: "+(landscapeColor.length+cubeColor.length+rodColor.length+rodReelColor.length));
@@ -134,23 +130,13 @@ function main() {
         p0 = camera.getCameraPosition();
         pRef = camera.getReferencePoint();
 
-        cameraMatrix = mat4.create();
-        persMatrix = mat4.create();
-        lookAt = mat4.create();
-        model = mat4.create();
-        matrix = mat4.create();
-        lightMatrix = mat4.create();
-        
-        cameraMatrix = get3DViewingMatrix(p0, pRef, V);
-        persMatrix = getPerspectiveMatrix(xw_min, xw_max, yw_min, yw_max, z_near, z_far);
-        mat4.multiply(lookAt, persMatrix, cameraMatrix);
-        mat4.multiply(matrix, lookAt, model);
-
-        mat4.rotateY(lightMatrix, lightMatrix, degToRad(0.1));
-        vec3.transformMat4(light, light, lightMatrix);
-
+        matrix = getFinalMatrix(p0, pRef, V, xw_min, xw_max, yw_min, yw_max, z_near, z_far)
         gl.uniformMatrix4fv(transfMatrixLoc, false, matrix);
         gl.uniform3fv(lightDirectionLoc, light);
+
+        /*
+        mat4.rotateY(lightMatrix, lightMatrix, degToRad(0.1));
+        vec3.transformMat4(light, light, lightMatrix);*/
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
