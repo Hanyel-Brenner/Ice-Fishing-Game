@@ -1,5 +1,9 @@
-export function renderObject(gl, positionBuffer, colorBuffer, vertexData, colorData){
-    
+export function renderObject(gl, positionBuffer, colorBuffer, vertices, color){
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length*6);
 }
 
 export function renderSquare(gl, positionBuffer, colorBuffer, rectangleData, rectangleColor){

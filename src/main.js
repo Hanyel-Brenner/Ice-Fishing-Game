@@ -1,17 +1,15 @@
 import {generateShader, generateProgram} from './shaderProgram.js';
 import { keyboardPressDown, keyboardPressUp, mouseTrack } from './input.js';
-import {setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setLandscapeVertices} from './shapes3d.js';
 import * as camera from './camera.js';
 import {degToRad, getFinalMatrix, rotateObjectMatrixY , applyTransformation } from './utils.js';
-import { renderCylinder, renderCube } from './renderFunctions.js';
+import { renderCylinder, renderCube, renderObject } from './renderFunctions.js';
 import {colors} from './colors.js'
-import { gameObject } from './gameObject.js';
 import {setTime} from './gameState.js'
-
+import {landscape, cube, rod} from './objects.js'
 setTime();
-
+/*
 const N_OF_CIRCLE_POINTS = 1000;
-const MAX_POINTS = 3;
+
 const color = [[1.0, 0.0, 0.0],  //front, red
                 [0.0, 1.0, 0.0],  //left, green
                 [0.0 ,0.0, 1.0], //back, blue
@@ -26,27 +24,22 @@ const color2 = [[0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87]];
 
-
-var rod = new gameObject();
-var landscape = new gameObject();
-
-/* CUBE DATA*/
 var cubePosition = setCubeVertices(0.5);
 var cubeColor = setCubeColors(color);
 var cubeNormal = setCubeNormals();
-/* LANDSCAPE DATA*/
+
 var landscapePosition = setLandscapeVertices(200, 0.5);
 var landscapeColor = setCubeColors(color2);
 var landscapeMat = rotateObjectMatrixY( landscapePosition, degToRad(45), [200, -0.5, 0.0]);
 landscapePosition = applyTransformation(landscapePosition, landscapeMat);
-/* CYLINDER DATA*/
+
 var rodPosition = setCylinderVertices([0.9, 0.9, 0.0],[0.9, 0.0,-0.8], 0.05, N_OF_CIRCLE_POINTS);
 var rodColor = setCylinderColor([0.0, 1.0, 0.0], N_OF_CIRCLE_POINTS); 
 var rodReelPosition = setCylinderVertices( [ 0.95, 0.1,-0.6], [ 0.99, 0.1 ,-0.7], 0.07, N_OF_CIRCLE_POINTS);
 var rodReelColor = setCylinderColor([0.57, 1.0, 0.33], N_OF_CIRCLE_POINTS);
 var rodReelMat = rotateObjectMatrixY( rodReelPosition, degToRad(90), [0.95, 0.1,-0.6]);
 rodReelPosition = applyTransformation(rodReelPosition, rodReelMat);
-
+*/
 var light = [0.5, 0.0, -0.5];
 
 function main() {
@@ -125,9 +118,6 @@ function main() {
 
     var matrix = mat4.create();
 
-    console.log("sum of vertices :"+(landscapePosition.length+cubePosition.length+rodPosition.length+rodReelPosition.length));
-    console.log("sum of color: "+(landscapeColor.length+cubeColor.length+rodColor.length+rodReelColor.length));
-
     function render(){
 
         camera.updateCamera();
@@ -145,10 +135,11 @@ function main() {
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        renderCube(gl, positionBuffer, colorBuffer, landscapePosition, landscapeColor);
-        renderCube(gl, positionBuffer, colorBuffer, cubePosition, cubeColor);
-        renderCylinder(gl, positionBuffer, colorBuffer, rodPosition, rodColor);
-        renderCylinder(gl, positionBuffer, colorBuffer, rodReelPosition, rodReelColor);
+        renderCube(gl, positionBuffer, colorBuffer, landscape.getPositionArray(), landscape.getColorArray());
+        renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
+        renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
+        //renderCylinder(gl, positionBuffer, colorBuffer, rodPosition, rodColor);
+        //renderCylinder(gl, positionBuffer, colorBuffer, rodReelPosition, rodReelColor);
         
         requestAnimationFrame(render);
     }
