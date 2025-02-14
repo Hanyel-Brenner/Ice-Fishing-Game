@@ -1,3 +1,6 @@
+export function renderObject(gl, positionBuffer, colorBuffer, vertexData, colorData){
+    
+}
 
 export function renderSquare(gl, positionBuffer, colorBuffer, rectangleData, rectangleColor){
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);

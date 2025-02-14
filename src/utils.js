@@ -91,3 +91,40 @@ export function getPerspectiveMatrix(xw_min,xw_max,yw_min,yw_max,z_near,z_far){
     ];
     return matrix;
 }
+
+export function getFinalMatrix(p0, pRef, V, xw_min, xw_max, yw_min, yw_max, z_near, z_far){
+    var cameraMatrix = mat4.create();
+    var persMatrix = mat4.create();
+    var lookAt = mat4.create();
+    var model = mat4.create();
+    var matrix = mat4.create();
+    cameraMatrix = get3DViewingMatrix(p0, pRef, V);
+    persMatrix = getPerspectiveMatrix(xw_min, xw_max, yw_min, yw_max, z_near, z_far);
+    mat4.multiply(lookAt, persMatrix, cameraMatrix);
+    mat4.multiply(matrix, lookAt, model);
+    return matrix
+}
+
+export function rotateObjectMatrixY(object, rotationAngle, translation2){
+    var translation = [ -object[0], -object[1], -object[2]]
+    var matrix = mat4.create();
+    mat4.translate(matrix, matrix,translation2);
+    mat4.rotateY(matrix, matrix,rotationAngle);
+    mat4.translate(matrix, matrix, translation);
+    return matrix;
+}
+
+export function applyTransformation(object, transfMatrix){
+    var len = object.length;
+    var newObject = [];
+    var oldVertex = [];
+    var newVertex = [];
+    for(let i=0; i < len; i += 3){
+        oldVertex[0] = object[i];
+        oldVertex[1] = object[i+1];
+        oldVertex[2] = object[i+2];
+        vec3.transformMat4(newVertex, oldVertex ,transfMatrix);
+        newObject.push(newVertex[0], newVertex[1], newVertex[2]);
+    }
+    return newObject;
+}

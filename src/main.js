@@ -1,11 +1,11 @@
 import {generateShader, generateProgram} from './shaderProgram.js';
 import { keyboardPressDown, keyboardPressUp, mouseTrack } from './input.js';
-import {setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, rotateObjectMatrixY , applyTransformation, setLandscapeVertices} from './shapes3d.js';
+import {setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setLandscapeVertices} from './shapes3d.js';
 import * as camera from './camera.js';
-import {degToRad} from './utils.js';
+import {degToRad, getFinalMatrix, rotateObjectMatrixY , applyTransformation } from './utils.js';
 import { renderCylinder, renderCube } from './renderFunctions.js';
 import {colors} from './colors.js'
-import { getFinalMatrix } from './scene.js';
+import { gameObject } from './gameObject.js';
 import {setTime} from './gameState.js'
 
 setTime();
@@ -25,6 +25,10 @@ const color2 = [[0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87]];
+
+
+var rod = new gameObject();
+var landscape = new gameObject();
 
 /* CUBE DATA*/
 var cubePosition = setCubeVertices(0.5);

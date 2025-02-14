@@ -2,7 +2,7 @@ export var gameState = {
     isRunning : false,
     isFishing : false,
     fishQuantity : 0,
-    time : 0 ,//new Date()
+    time : 0
 }
 
 export function setIsRunning(valor){
