@@ -105,6 +105,15 @@ export function getFinalMatrix(p0, pRef, V, xw_min, xw_max, yw_min, yw_max, z_ne
     return matrix
 }
 
+export function assembleArray( arrays){
+    var array = []
+    var n = arrays.length;
+    for(let i = 0; i < n; i++){
+        array = array.concat(arrays[i])
+    }
+    return array; 
+}
+
 export function rotateObjectMatrixY(object, rotationAngle, translation2){
     var translation = [ -object[0], -object[1], -object[2]]
     var matrix = mat4.create();

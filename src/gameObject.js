@@ -1,4 +1,4 @@
-export class gameObject{
+export class GameObject{
 
     referencePoint;
     positionArray;
