@@ -4,9 +4,7 @@ import * as camera from './camera.js';
 import {degToRad, getFinalMatrix, rotateObjectMatrixY , applyTransformation } from './utils.js';
 import { renderCylinder, renderCube, renderObject } from './renderFunctions.js';
 import {colors} from './colors.js'
-import {setTime} from './gameState.js'
 import {landscape, cube, rod} from './objects.js'
-setTime();
 /*
 const N_OF_CIRCLE_POINTS = 1000;
 
