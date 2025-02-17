@@ -276,22 +276,45 @@ export function setCircleVertices3d(center, radius, numberOfPoints){
     return vertices;
   }
 
-export function setEllipsoidVertices(a, b ,c, latitudeDivisions, longitudeDivisions){
-  // Generate ellipsoid vertices
-  let vertices = [];
-  for (let i = 0; i <= latitudeDivisions; i++) {
-    let u = i * Math.PI / latitudeDivisions;  // Latitude angle (0 to pi)
-    for (let j = 0; j <= longitudeDivisions; j++) {
-      let v = j * 2 * Math.PI / longitudeDivisions;  // Longitude angle (0 to 2pi)
-      
-      let x = a * Math.sin(u) * Math.cos(v);
-      let y = b * Math.sin(u) * Math.sin(v);
-      let z = c * Math.cos(u);
-      
-      vertices.push(x, y, z);
+export function setEllipsoidVertices(latitudeBands, longitudeBands, radius){
+    let vertices = [];
+    for (let latNumber = 0; latNumber <= latitudeBands; latNumber++) {
+        let theta = latNumber * Math.PI / latitudeBands;
+        let sinTheta = Math.sin(theta);
+        let cosTheta = Math.cos(theta);
+
+        for (let longNumber = 0; longNumber <= longitudeBands; longNumber++) {
+            let phi = longNumber * 2 * Math.PI / longitudeBands;
+            let sinPhi = Math.sin(phi);
+            let cosPhi = Math.cos(phi);
+
+            let x = radius * cosPhi * sinTheta;
+            let y = radius * cosTheta;
+            let z = radius * sinPhi * sinTheta;
+
+            vertices.push(x, y, z);
+        }
     }
-  }
-  return vertices;
+
+    // Instead of an index buffer, we define each triangle individually.
+    let triangles = [];
+    for (let latNumber = 0; latNumber < latitudeBands; latNumber++) {
+        for (let longNumber = 0; longNumber < longitudeBands; longNumber++) {
+            let first = (latNumber * (longitudeBands + 1)) + longNumber;
+            let second = first + longitudeBands + 1;
+
+            // First triangle
+            triangles.push(vertices[first * 3], vertices[first * 3 + 1], vertices[first * 3 + 2]);
+            triangles.push(vertices[second * 3], vertices[second * 3 + 1], vertices[second * 3 + 2]);
+            triangles.push(vertices[(first + 1) * 3], vertices[(first + 1) * 3 + 1], vertices[(first + 1) * 3 + 2]);
+
+            // Second triangle
+            triangles.push(vertices[second * 3], vertices[second * 3 + 1], vertices[second * 3 + 2]);
+            triangles.push(vertices[(second + 1) * 3], vertices[(second + 1) * 3 + 1], vertices[(second + 1) * 3 + 2]);
+            triangles.push(vertices[(first + 1) * 3], vertices[(first + 1) * 3 + 1], vertices[(first + 1) * 3 + 2]);
+        }
+    }
+    return triangles;
 }
 
 export function setEllipsoidColor(color, vertexArrayLength){

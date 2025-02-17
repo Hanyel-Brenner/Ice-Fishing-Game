@@ -5,7 +5,7 @@ import {degToRad, getFinalMatrix, rotateObjectMatrixY , applyTransformation, rad
 import { renderCylinder, renderCube, renderObject } from './renderFunctions.js';
 import {colors} from './colors.js'
 import * as gameState from './gameState.js'
-import {landscape, cube, rod, pond, POND_RADIUS} from './objects.js'
+import {landscape, cube, rod, pond, fish, POND_RADIUS} from './objects.js'
 
 gameState.setTime();
 
@@ -111,6 +111,7 @@ function main() {
         renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
         renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
         renderObject(gl, positionBuffer, colorBuffer, pond.getPositionArray(), pond.getColorArray());
+        renderObject(gl, positionBuffer, colorBuffer, fish.getPositionArray(), fish.getColorArray());
 
         if(insidePond && collision.collided == true){
             gameState.setIsFishing(true);

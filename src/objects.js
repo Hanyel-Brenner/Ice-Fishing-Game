@@ -1,7 +1,7 @@
 import { colors } from "./colors.js";
 import { GameObject } from "./gameObject.js";
 import { setCircleColor } from "./shapes2d.js";
-import {setLandscapeVertices, setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setCircleVertices3d} from './shapes3d.js'
+import {setLandscapeVertices, setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setCircleVertices3d, setEllipsoidVertices, setEllipsoidColor} from './shapes3d.js'
 import { degToRad, rotateObjectMatrixY, rotateObjectMatrixX ,applyTransformation, assembleArray } from "./utils.js";
 
 const N_OF_CIRCLE_POINTS = 1000;
@@ -52,6 +52,10 @@ rodReelPosition = applyTransformation(rodReelPosition, rodReelMat);
 var pondPosition = setCircleVertices3d([0.5 ,0.5, -1.8], POND_RADIUS , N_OF_CIRCLE_POINTS);
 var pondColor = setCircleColor(colors.blue);
 
+/* FISH DATA */
+var fishPosition = setEllipsoidVertices(30, 30, 0.8);
+var fishColor = setEllipsoidColor(colors.red, fishPosition.length);
+
 var landscape = new GameObject();
 landscape.setReferencePoint([0.0, 0.0, 0.0]);
 landscape.setPositionArray(landscapePosition);
@@ -77,5 +81,10 @@ pond.setPositionArray(applyTransformation(pondPosition, pondMatrix));
 pond.setColorArray(pondColor);
 
 var fish = new GameObject();
+fish.setReferencePoint([0.0, 0.0, 0.0]);
+var fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.8, 0.8, -1.0]);
+fishPosition = applyTransformation(fishPosition, fishMatrix);
+fish.setPositionArray(fishPosition);
+fish.setColorArray(fishColor);
 
-export {landscape , cube, rod, pond}
+export {landscape , cube, rod, pond, fish}
