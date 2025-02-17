@@ -56,14 +56,38 @@
     </script>
 
 </head>
-<body align = "center">
+<body align="center">
     <canvas id="canvas" width="500" height="500"></canvas>
-    <h1 id = "gameState"></h1>
-    <script type="module">
-        import * as gameState from './src/gameState.js'
-        const game = document.getElementById("gameState");
-        setInterval( () => {game.innerHTML = gameState.getTime()}, 100)
 
+    <p><strong>Tempo:</strong> <span id="time">0</span> segundos</p>
+    <p><strong>Status:</strong> <span id="status">Parado</span></p>
+    <p><strong>Pescando:</strong> <span id="fishing">Não</span></p>
+    <p><strong>Peixes Coletados:</strong> <span id="fishQuantity">0</span></p>
+
+    <button id="startGame">Iniciar Jogo</button>
+
+    <script type="module">
+        import { getTime, getIsRunning, getIsFishing, getFishQuantity, setIsRunning, setIsFishing, setFishQuantity, setTime } from './src/gameState.js';
+
+        const timeEl = document.getElementById("time");
+        const statusEl = document.getElementById("status");
+        const fishingEl = document.getElementById("fishing");
+        const fishQuantityEl = document.getElementById("fishQuantity");
+
+        document.getElementById("startGame").addEventListener("click", () => {
+            setIsRunning(true);
+            setTime(); 
+            updateHUD();
+        });
+
+        function updateHUD() {
+            timeEl.innerText = getTime();
+            statusEl.innerText = getIsRunning() ? "Rodando" : "Parado";
+            fishingEl.innerText = getIsFishing() ? "Sim" : "Não";
+            fishQuantityEl.innerText = getFishQuantity();
+        }
+
+        setInterval(updateHUD, 100);
     </script>
 </body>
 </html>
