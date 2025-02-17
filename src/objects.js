@@ -76,4 +76,6 @@ var pondMatrix = rotateObjectMatrixX(pond.getReferencePoint(), degToRad(90) , [ 
 pond.setPositionArray(applyTransformation(pondPosition, pondMatrix));
 pond.setColorArray(pondColor);
 
+var fish = new GameObject();
+
 export {landscape , cube, rod, pond}

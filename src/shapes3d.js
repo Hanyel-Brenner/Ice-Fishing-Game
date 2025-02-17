@@ -275,3 +275,29 @@ export function setCircleVertices3d(center, radius, numberOfPoints){
     }
     return vertices;
   }
+
+export function setEllipsoidVertices(a, b ,c, latitudeDivisions, longitudeDivisions){
+  // Generate ellipsoid vertices
+  let vertices = [];
+  for (let i = 0; i <= latitudeDivisions; i++) {
+    let u = i * Math.PI / latitudeDivisions;  // Latitude angle (0 to pi)
+    for (let j = 0; j <= longitudeDivisions; j++) {
+      let v = j * 2 * Math.PI / longitudeDivisions;  // Longitude angle (0 to 2pi)
+      
+      let x = a * Math.sin(u) * Math.cos(v);
+      let y = b * Math.sin(u) * Math.sin(v);
+      let z = c * Math.cos(u);
+      
+      vertices.push(x, y, z);
+    }
+  }
+  return vertices;
+}
+
+export function setEllipsoidColor(color, vertexArrayLength){
+    color = [];
+    for(let i=0; i<vertexArrayLength/3; i++){
+        color.push(color[0], color[1], color[2]);
+    }
+    return color;
+}
