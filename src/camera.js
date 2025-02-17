@@ -21,6 +21,29 @@ export function getReferencePoint(){
   return [xRef, yRef, zRef];
 }
 
+export function getDirection(){
+  return [xRef - x0, yRef - y0, zRef - z0]
+}
+
+export function detectCollision(){
+  if(input.keysPressed[32] == true){  //space bar
+    var dir = unitVector([xRef - x0, yRef - y0, zRef - z0]);
+    //p0 + k * dir = collisionPoint, but what is k. We know the ground is at height 0, so y = 0
+    //therefore, we found k, because colP.y = 0 = p0.y + k * dir.y, so k = (-p0.y)/(dir.y);
+    var k = (-y0)/(dir[1]);
+    var x = x0 + (k * dir[0]);
+    var z = z0 + (k * dir[2]);
+    return {
+      collided : true,
+      point : [x ,0.0, z]
+    }
+  }
+  else return {
+    collided : false,
+    point : [0.0, 0.0, 0.0]
+  }
+}
+
 export function updateCamera(){
 
   var direction = unitVector([xRef - x0, 0 , zRef - z0]);

@@ -114,11 +114,73 @@ export function assembleArray( arrays){
     return array; 
 }
 
+export function trackRod(cameraDir, rodDir, rod, p0){
+    var ang_camera_x;
+    var ang_rod_x;
+    var angle;
+    var rodMatrix = mat4.create();
+
+    if(cameraDir[2] < 0){
+        ang_camera_x = vec3.angle(cameraDir,[1.0, 0.0, 0.0]); 
+    }
+    else{
+        ang_camera_x = degToRad(360) - vec3.angle(cameraDir,[1.0, 0.0, 0.0]); 
+    }
+    if(rodDir[2] < 0){
+        ang_rod_x = vec3.angle(rodDir,[1.0, 0.0, 0.0]); 
+    }
+    else{
+        ang_rod_x = degToRad(360) - vec3.angle(rodDir,[1.0, 0.0, 0.0]); 
+    }
+
+    var alpha = 0.5;
+    var theta = 0.5;
+    var point1 = [ p0[0] + (alpha * cameraDir[0]), p0[1] + (alpha * cameraDir[1]), p0[2] + (alpha * cameraDir[2])];
+    var perpVector = perpendicularVectorClockwise([cameraDir[0], cameraDir[2]]);
+    var x = perpVector[0];
+    var z = perpVector[1];
+    var vector = [x, cameraDir[1] ,z];
+    var point2 = [point1[0] + (theta * vector[0]), point1[1] + (theta * vector[1]) , point1[2] + (theta * vector[2])];
+
+    angle = ang_camera_x - ang_rod_x;
+    rodMatrix = mat4.create();
+    //mat4.translate(rodMatrix, rodMatrix, pRef);
+    mat4.translate(rodMatrix, rodMatrix, point2);
+
+    mat4.rotateY(rodMatrix, rodMatrix, angle);
+    var temp = rod.getReferencePoint();
+    mat4.translate(rodMatrix, rodMatrix, [-temp[0], -temp[1], -temp[2]]);
+    rod.setPositionArray(applyTransformation(rod.getPositionArray(), rodMatrix));
+    rod.setReferenceDirection(cameraDir);
+    //rod.setReferencePoint(pRef);
+    rod.setReferencePoint(point2);
+}
+
+export function isInsidePond(point, referencePoint, radius){
+    var cx = referencePoint[0];
+    var cz = referencePoint[2];
+    var x = point[0];
+    var z = point[2];
+    if(Math.sqrt(Math.pow(x - cx, 2) + Math.pow(z - cz, 2)) <= radius){
+        return true;
+    }
+    return false;
+}
+
 export function rotateObjectMatrixY(object, rotationAngle, translation2){
     var translation = [ -object[0], -object[1], -object[2]]
     var matrix = mat4.create();
     mat4.translate(matrix, matrix,translation2);
     mat4.rotateY(matrix, matrix,rotationAngle);
+    mat4.translate(matrix, matrix, translation);
+    return matrix;
+}
+
+export function rotateObjectMatrixX(object, rotationAngle, translation2){
+    var translation = [ -object[0], -object[1], -object[2]]
+    var matrix = mat4.create();
+    mat4.translate(matrix, matrix,translation2);
+    mat4.rotateX(matrix, matrix,rotationAngle);
     mat4.translate(matrix, matrix, translation);
     return matrix;
 }

@@ -249,3 +249,29 @@ export function setCylinderColor(color, nOfCirclePoints){
     
     return colorArray;
 }
+
+export function setCircleVertices3d(center, radius, numberOfPoints){
+    var angle = (2 * Math.PI)/numberOfPoints;
+    var xc = center[0], yc = center[1], zc = center[2];
+    var vertices = [];
+    
+    for(let i=0; i<numberOfPoints; i++){
+      var x = radius * Math.cos(angle*i) + xc;
+      var y = radius * Math.sin(angle*i) + yc;
+      var z = zc;
+      var x2 = radius * Math.cos(angle*(i+1)) + xc;
+      var y2 = radius * Math.sin(angle*(i+1)) + yc;
+      var z2 = zc;
+      
+      vertices.push(x);
+      vertices.push(y);
+      vertices.push(z);
+      vertices.push(x2);
+      vertices.push(y2);
+      vertices.push(z2);
+      vertices.push(0.0 + xc);
+      vertices.push(0.0 + yc);
+      vertices.push(0.0 + zc); 
+    }
+    return vertices;
+  }

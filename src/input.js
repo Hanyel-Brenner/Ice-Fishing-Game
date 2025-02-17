@@ -4,12 +4,12 @@ export var mouseDirection = [0.0 , 0.0];
 
 export function keyboardPressDown(event){
     keysPressed[event.keyCode] = true;
-  }
+}
   
 export function keyboardPressUp(event){
     keysPressed[event.keyCode] = false
-  }
-  
+}
+
 export function mouseTrack(event, canvas){
     let x = -1.0 + (2*(event.offsetX/canvas.width));
     let y = 1.0 - (2*(event.offsetY/canvas.height)); 
@@ -29,3 +29,4 @@ export function mouseTrack(event, canvas){
       mouseEventCounter++;
     }
   }
+
