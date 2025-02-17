@@ -1,6 +1,7 @@
 export class GameObject{
 
     referencePoint;
+    referenceDirection;
     positionArray;
     colorArray;
     normalArray;
@@ -9,6 +10,10 @@ export class GameObject{
 
     setReferencePoint(referencePoint){
         this.referencePoint = referencePoint
+    }
+
+    setReferenceDirection(referenceDirection){
+        this.referenceDirection = referenceDirection;
     }
 
     setPositionArray(positionArray){
@@ -25,6 +30,10 @@ export class GameObject{
 
     getReferencePoint(){
         return this.referencePoint;
+    }
+
+    getReferenceDirection(){
+        return this.referenceDirection;
     }
 
     getPositionArray(){

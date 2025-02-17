@@ -1,45 +1,14 @@
 import {generateShader, generateProgram} from './shaderProgram.js';
 import { keyboardPressDown, keyboardPressUp, mouseTrack } from './input.js';
 import * as camera from './camera.js';
-import {degToRad, getFinalMatrix, rotateObjectMatrixY , applyTransformation } from './utils.js';
+import {degToRad, getFinalMatrix, rotateObjectMatrixY , applyTransformation, radToDeg, trackRod, isInsidePond } from './utils.js';
 import { renderCylinder, renderCube, renderObject } from './renderFunctions.js';
 import {colors} from './colors.js'
-import {setTime} from './gameState.js'
-import {landscape, cube, rod} from './objects.js'
-setTime();
-/*
-const N_OF_CIRCLE_POINTS = 1000;
+import * as gameState from './gameState.js'
+import {landscape, cube, rod, pond, POND_RADIUS} from './objects.js'
 
-const color = [[1.0, 0.0, 0.0],  //front, red
-                [0.0, 1.0, 0.0],  //left, green
-                [0.0 ,0.0, 1.0], //back, blue
-                [1.0, 1.0, 0.0],    //right, yellow
-                [0.0, 1.0, 1.0],    //top , purple
-                [1.0, 0.0, 1.0]];   //bottom, cyan
+gameState.setTime();
 
-const color2 = [[0.87, 0.87, 0.87],
-                [0.87, 0.87, 0.87],
-                [0.87, 0.87, 0.87],
-                [0.87, 0.87, 0.87],
-                [0.87, 0.87, 0.87],
-                [0.87, 0.87, 0.87]];
-
-var cubePosition = setCubeVertices(0.5);
-var cubeColor = setCubeColors(color);
-var cubeNormal = setCubeNormals();
-
-var landscapePosition = setLandscapeVertices(200, 0.5);
-var landscapeColor = setCubeColors(color2);
-var landscapeMat = rotateObjectMatrixY( landscapePosition, degToRad(45), [200, -0.5, 0.0]);
-landscapePosition = applyTransformation(landscapePosition, landscapeMat);
-
-var rodPosition = setCylinderVertices([0.9, 0.9, 0.0],[0.9, 0.0,-0.8], 0.05, N_OF_CIRCLE_POINTS);
-var rodColor = setCylinderColor([0.0, 1.0, 0.0], N_OF_CIRCLE_POINTS); 
-var rodReelPosition = setCylinderVertices( [ 0.95, 0.1,-0.6], [ 0.99, 0.1 ,-0.7], 0.07, N_OF_CIRCLE_POINTS);
-var rodReelColor = setCylinderColor([0.57, 1.0, 0.33], N_OF_CIRCLE_POINTS);
-var rodReelMat = rotateObjectMatrixY( rodReelPosition, degToRad(90), [0.95, 0.1,-0.6]);
-rodReelPosition = applyTransformation(rodReelPosition, rodReelMat);
-*/
 var light = [0.5, 0.0, -0.5];
 
 function main() {
@@ -104,7 +73,7 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    var p0 = [0.0, 0.0, 2.0];
+    var p0 = [0.0, 0.5, 1];
     var pRef = [0.0, 0.0, 0.0];
     var V = [0.0, 1.0, 0.0];
     camera.initialize(p0,pRef);
@@ -117,20 +86,23 @@ function main() {
     var z_far = -200.0
 
     var matrix = mat4.create();
+    var cameraDir;
+    var rodDir;
 
     function render(){
 
         camera.updateCamera();
         p0 = camera.getCameraPosition();
         pRef = camera.getReferencePoint();
+        cameraDir = camera.getDirection();
+        rodDir = rod.getReferenceDirection();   
+        trackRod(cameraDir, rodDir, rod, p0);
+        var collision = camera.detectCollision();
+        var insidePond = isInsidePond(collision.point, pond.getReferencePoint(), POND_RADIUS);
 
         matrix = getFinalMatrix(p0, pRef, V, xw_min, xw_max, yw_min, yw_max, z_near, z_far)
         gl.uniformMatrix4fv(transfMatrixLoc, false, matrix);
         gl.uniform3fv(lightDirectionLoc, light);
-
-        /*
-        mat4.rotateY(lightMatrix, lightMatrix, degToRad(0.1));
-        vec3.transformMat4(light, light, lightMatrix);*/
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -138,14 +110,22 @@ function main() {
         renderCube(gl, positionBuffer, colorBuffer, landscape.getPositionArray(), landscape.getColorArray());
         renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
         renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
-        //renderCylinder(gl, positionBuffer, colorBuffer, rodPosition, rodColor);
-        //renderCylinder(gl, positionBuffer, colorBuffer, rodReelPosition, rodReelColor);
-        
+        renderObject(gl, positionBuffer, colorBuffer, pond.getPositionArray(), pond.getColorArray());
+
+        if(insidePond && collision.collided == true){
+            gameState.setIsFishing(true);
+            var rodPos = rod.getPositionArray();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([rodPos[0], rodPos[1], rodPos[2], collision.point[0], collision.point[1], collision.point[2] ]), gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),gl.STATIC_DRAW);
+            gl.drawArrays(gl.LINES, 0, 2);
+        }
         requestAnimationFrame(render);
     }
 
     render();
-    
+
 }
 
 main();
