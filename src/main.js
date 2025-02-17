@@ -104,7 +104,7 @@ function main() {
         gl.uniformMatrix4fv(transfMatrixLoc, false, matrix);
         gl.uniform3fv(lightDirectionLoc, light);
 
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clearColor(0.51, 0.78, 0.89, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         renderCube(gl, positionBuffer, colorBuffer, landscape.getPositionArray(), landscape.getColorArray());

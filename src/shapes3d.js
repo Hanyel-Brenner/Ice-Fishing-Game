@@ -318,9 +318,9 @@ export function setEllipsoidVertices(latitudeBands, longitudeBands, radius){
 }
 
 export function setEllipsoidColor(color, vertexArrayLength){
-    color = [];
-    for(let i=0; i<vertexArrayLength/3; i++){
-        color.push(color[0], color[1], color[2]);
+    var colorArray = [];
+    for(let i=0; i<(vertexArrayLength * 18/3 ); i++){
+        colorArray.push(color[0], color[1], color[2]);
     }
-    return color;
+    return colorArray;
 }

@@ -38,7 +38,7 @@ var landscapeMat = rotateObjectMatrixY( landscapePosition, degToRad(45), [200, -
 landscapePosition = applyTransformation(landscapePosition, landscapeMat);
 /* ROD DATA*/
 var rodPosition = setCylinderVertices([0.9, 0.9, 0.0],[0.9, 0.0,-0.8], 0.05, N_OF_CIRCLE_POINTS);
-var rodColor = setCylinderColor([0.0, 1.0, 0.0], N_OF_CIRCLE_POINTS);
+var rodColor = setCylinderColor([0.57, 1.0, 0.33], N_OF_CIRCLE_POINTS);
 var rodMat = mat4.create();
 mat4.translate(rodMat, rodMat, [0.0, -0.5, 0.0]);
 rodPosition = applyTransformation(rodPosition, rodMat);
@@ -50,7 +50,7 @@ rodReelPosition = applyTransformation(rodReelPosition, rodReelMat);
 
 /* POND DATA*/
 var pondPosition = setCircleVertices3d([0.5 ,0.5, -1.8], POND_RADIUS , N_OF_CIRCLE_POINTS);
-var pondColor = setCircleColor(colors.blue);
+var pondColor = setCircleColor(colors.blue, N_OF_CIRCLE_POINTS);
 
 /* FISH DATA */
 var fishPosition = setEllipsoidVertices(30, 30, 0.8);
