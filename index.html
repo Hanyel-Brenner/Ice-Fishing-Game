@@ -29,28 +29,31 @@
         uniform mat4 matrix;
 
         varying vec3 vColor;
-        //varying vec3 vNormal;
+        varying vec3 vNormal;
         
         void main(){
             gl_Position = matrix * vec4(position, 1.0);
             vColor = color;
-            //vNormal = normal;
+            vNormal = normal;
         }
     </script>
     
     <script id="fragmentShader" type="text">
         precision mediump float;
         varying vec3 vColor;
-        //varying vec3 vNormal;
+        varying vec3 vNormal;
         
         uniform vec3 uLightDirection;
+        uniform int useNormals;
         
         void main(){
-            //vec3 norm = normalize(vNormal);
-            //vec3 lightDir = normalize(uLightDirection*(-1.0));
-            //float light = dot(lightDir, norm);
-            //vec3 color = (vColor.rgb * light) + 0.2; 
-            //gl_FragColor = vec4(color,1.0);
+            if(useNormals == 1){
+             vec3 norm = normalize(vNormal);
+             vec3 lightDir = normalize(uLightDirection*(-1.0));
+             float light = dot(lightDir, norm);
+             vec3 color = (vColor.rgb * light) + 0.2; 
+             gl_FragColor = vec4(color,1.0);
+            }
             gl_FragColor = vec4(vColor,1.0);
         }
     </script>

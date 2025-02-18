@@ -1,8 +1,12 @@
-export function renderObject(gl, positionBuffer, colorBuffer, vertices, color){
+export function renderObject(gl, positionBuffer, colorBuffer, normalBuffer, vertices, color, normal){
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+    if(normal != null){
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal), gl.STATIC_DRAW);
+    }
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length*6);
 }
 
@@ -22,19 +26,25 @@ export function renderCircle(gl, positionBuffer, colorBuffer, circleData, circle
     gl.drawArrays(gl.TRIANGLES, 0, nOfPoints * 6);
 }
 
-export function renderCube(gl, positionBuffer, colorBuffer, vertices, color){
+export function renderCube(gl, positionBuffer, colorBuffer, normalBuffer, vertices, color, normal){
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+    if(normal != null){
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        gl.BufferData(gl.ARRAY_BUFFER, new Float32Array(normal), gl.STATIC_DRAW);
+    }
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length*6);
 }
 
-export function renderCylinder(gl, positionBuffer, colorBuffer, vertices, color){
+export function renderCylinder(gl, positionBuffer, colorBuffer, normalBuffer, vertices, color, normal){
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.BufferData(gl.ARRAY_BUFFER, new Float32Array(normal), gl.STATIC_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length*6);
 }
 

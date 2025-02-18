@@ -10,7 +10,7 @@ import * as input from './input.js'
 
 gameState.setTime();
 
-var light = [0.0, 0.5, -0.5];
+var light = [0.0, 0.0, -0.5];
 
 function main() {
     
@@ -48,6 +48,11 @@ function main() {
     gl.enableVertexAttribArray(colorLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 0, 0);
+
+    const normalLocation = gl.getAttribLocation(program, 'normal');
+    gl.enableVertexAttribArray(normalLocation);
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.vertexAttribPointer(normalLocation, 3, gl.FLOAT, false, 0, 0);
   
     body.addEventListener("keydown", function(event){
         keyboardPressDown(event);
@@ -69,6 +74,9 @@ function main() {
 
     const lightDirectionLoc = gl.getUniformLocation(program, 'uLightDirection');
     gl.uniform3fv(lightDirectionLoc, light);
+
+    const useNormalsLoc = gl.getUniformLocation(program, 'useNormals');
+    gl.uniform1i(useNormalsLoc, 0);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -113,17 +121,20 @@ function main() {
             gl.clearColor(0.51, 0.78, 0.89, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-            renderCube(gl, positionBuffer, colorBuffer, landscape.getPositionArray(), landscape.getColorArray());
-            renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
-            renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
-            renderObject(gl, positionBuffer, colorBuffer, pond.getPositionArray(), pond.getColorArray());
+            gl.uniform1i(useNormalsLoc, 1);
+            renderCube(gl, positionBuffer, colorBuffer, normalBuffer, landscape.getPositionArray(), landscape.getColorArray(), landscape.getNormalArray());
+            renderCube(gl, positionBuffer, colorBuffer, normalBuffer,cube.getPositionArray(), cube.getColorArray(), cube.getNormalArray());
+            renderObject(gl, positionBuffer, colorBuffer, normalBuffer,pond.getPositionArray(), pond.getColorArray(), pond.getNormalArray);
+
+            gl.uniform1i(useNormalsLoc, 0);
+            renderObject(gl, positionBuffer, colorBuffer, normalBuffer,rod.getPositionArray(), rod.getColorArray(), rod.getNormalArray());
 
             var fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), pRef);
             fish.setReferencePoint(pRef);
             fish.setPositionArray(applyTransformation(fish.getPositionArray(), fishMatrix));
 
             if(gameState.getIsHoldingFish() == true){
-                renderObject(gl, positionBuffer, colorBuffer, fish.getPositionArray(), fish.getColorArray());
+                renderObject(gl, positionBuffer, colorBuffer, normalBuffer, fish.getPositionArray(), fish.getColorArray(), fish.getNormalArray());
                 if(input.keysPressed[32] == true){
                     gameState.setIsHoldingFish(false);
                 }

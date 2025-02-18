@@ -58,6 +58,10 @@ rodReelPosition = applyTransformation(rodReelPosition, rodReelMat);
 /* POND DATA*/
 var pondPosition = setCircleVertices3d([0.5 ,0.5, -1.8], POND_RADIUS , N_OF_CIRCLE_POINTS);
 var pondColor = setCircleColor(colors.blue, N_OF_CIRCLE_POINTS);
+var pondNormal = [];
+for(let i=0; i<pondColor.length/3; i++){
+    pondNormal.push(0.0, 1.0, 0.0);
+}
 
 /* FISH DATA */
 var fishPosition = setEllipsoidVertices(5, 8, 0.3, 0.1, 0.1);
@@ -97,6 +101,7 @@ rod.setReferencePoint(ROD_INITIAL_POSITION);
 rod.setReferenceDirection([0.0, 0.0, 1.0]);
 rod.setPositionArray(assembleArray([rodPosition, rodReelPosition]));
 rod.setColorArray(assembleArray([rodColor, rodReelColor]));
+rod.setNormalArray(null);
 
 var cube = new GameObject();
 cube.setReferencePoint([0.0, 0.0, 0.0]);
@@ -111,6 +116,7 @@ pond.setReferencePoint([0.5 ,0.5, -1.8]);
 var pondMatrix = rotateObjectMatrixX(pond.getReferencePoint(), degToRad(90) , [ 0.5 ,-0.45, -1.8]);
 pond.setPositionArray(applyTransformation(pondPosition, pondMatrix));
 pond.setColorArray(pondColor);
+pond.setNormalArray(pondNormal);
 
 var fish = new GameObject();
 fish.setReferencePoint([0.0, 0.0, 0.0]);
@@ -164,5 +170,7 @@ fish.setColorArray(assembleArray([
     fishEye1Color, // Cor do olho esquerdo
     fishEye2Color  // Cor do olho direito
 ]));
+
+fish.setNormalArray(null);
 
 export {landscape, cube, rod, pond, fish};
