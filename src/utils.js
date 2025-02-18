@@ -156,6 +156,48 @@ export function trackRod(cameraDir, rodDir, rod, p0){
     rod.setReferencePoint(point2);
 }
 
+/*export function trackFish(cameraDir, fishDir, fish, p0){
+    var ang_camera_x;
+    var ang_fish_x;
+    var angle;
+    var fishMatrix = mat4.create();
+
+    if(cameraDir[2] < 0){
+        ang_camera_x = vec3.angle(cameraDir,[1.0, 0.0, 0.0]); 
+    }
+    else{
+        ang_camera_x = degToRad(360) - vec3.angle(cameraDir,[1.0, 0.0, 0.0]); 
+    }
+    if(fishDir[2] < 0){
+        ang_fish_x = vec3.angle(fishDir,[1.0, 0.0, 0.0]); 
+    }
+    else{
+        ang_fish_x = degToRad(360) - vec3.angle(fishDir,[1.0, 0.0, 0.0]); 
+    }
+
+    var alpha = 0.5;
+    var theta = 0.5;
+    var point1 = [ p0[0] + (alpha * cameraDir[0]), p0[1] + (alpha * cameraDir[1]), p0[2] + (alpha * cameraDir[2])];
+    var perpVector = perpendicularVectorClockwise([cameraDir[0], cameraDir[2]]);
+    var x = perpVector[0];
+    var z = perpVector[1];
+    var vector = [x, cameraDir[1] ,z];
+    var point2 = [point1[0] + (theta * vector[0]), point1[1] + (theta * vector[1]) , point1[2] + (theta * vector[2])];
+
+    angle = ang_camera_x - ang_fish_x;
+    fishMatrix = mat4.create();
+    //mat4.translate(rodMatrix, rodMatrix, pRef);
+    mat4.translate(fishMatrix, fishMatrix, point2);
+
+    mat4.rotateY(fishMatrix, fishMatrix, angle);
+    var temp = fish.getReferencePoint();
+    mat4.translate(fishMatrix, fishMatrix, [-temp[0], -temp[1], -temp[2]]);
+    fish.setPositionArray(applyTransformation(fish.getPositionArray(), fishMatrix));
+    fish.setReferenceDirection(cameraDir);
+    //rod.setReferencePoint(pRef);
+    fish.setReferencePoint(point2);
+}*/
+
 export function isInsidePond(point, referencePoint, radius){
     var cx = referencePoint[0];
     var cz = referencePoint[2];

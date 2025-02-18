@@ -10,7 +10,7 @@ import * as input from './input.js'
 
 gameState.setTime();
 
-var light = [0.5, 0.0, -0.5];
+var light = [0.0, 0.5, -0.5];
 
 function main() {
     
@@ -117,7 +117,17 @@ function main() {
             renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
             renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
             renderObject(gl, positionBuffer, colorBuffer, pond.getPositionArray(), pond.getColorArray());
-            renderObject(gl, positionBuffer, colorBuffer, fish.getPositionArray(), fish.getColorArray());
+
+            var fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), pRef);
+            fish.setReferencePoint(pRef);
+            fish.setPositionArray(applyTransformation(fish.getPositionArray(), fishMatrix));
+
+            if(gameState.getIsHoldingFish() == true){
+                renderObject(gl, positionBuffer, colorBuffer, fish.getPositionArray(), fish.getColorArray());
+                if(input.keysPressed[32] == true){
+                    gameState.setIsHoldingFish(false);
+                }
+            }
 
             if(insidePond && collision.collided == true && gameState.getIsFishing() == false){
                 gameState.setIsFishing(true);
@@ -147,6 +157,7 @@ function main() {
 
             if(gameState.getIsFishing() == true && fishingEnd - fishingStart >= 25){
                 gameState.setIsFishing(false);
+                gameState.setIsHoldingFish(true);
                 gameState.incrementFishQuantity();
                 gameState.setFishingProgress(50);
                 console.log("você pescou mais um peixe!");

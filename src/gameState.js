@@ -1,6 +1,7 @@
 export var gameState = {
     isRunning : false,
     isFishing : false,
+    isHoldingFish : false,
     fishQuantity : 0,
     fishingProgress : 0,
     time : 0
@@ -12,6 +13,10 @@ export function setIsRunning(valor){
 
 export function setIsFishing(valor){
     gameState.isFishing = valor
+}
+
+export function setIsHoldingFish(valor){
+    gameState.isHoldingFish = valor;
 }
 
 export function setFishingProgress(valor){
@@ -36,6 +41,10 @@ export function getIsRunning(){
 
 export function getIsFishing(){
     return gameState.isFishing;
+}
+
+export function getIsHoldingFish(){
+    return gameState.isHoldingFish;
 }
 
 export function getFishQuantity(){

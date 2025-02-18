@@ -114,7 +114,7 @@ pond.setColorArray(pondColor);
 
 var fish = new GameObject();
 fish.setReferencePoint([0.0, 0.0, 0.0]);
-
+fish.setReferenceDirection([0.0, 0.0, 1.0]);
 // Aplicar transformações para posicionar o corpo do peixe
 var fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.8, 0.8, -1.0]);
 fishPosition = applyTransformation(fishPosition, fishMatrix);
