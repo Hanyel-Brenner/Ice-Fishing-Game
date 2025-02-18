@@ -58,7 +58,9 @@
 </head>
 <body align="center">
     <canvas id="canvas" width="500" height="500"></canvas>
-
+    <p id="bar" style="width: 540px; height:19px ;background-color : rgb(61, 126, 47); justify-self: center;"></p>
+    <p style="width: 162px; height:10px ;background-color : rgb(0, 0, 0); justify-self: center;"></p>
+    <p style="width: 540px; height:10px ;background-color : rgb(100, 0, 0); justify-self: center;"></p>
     <p><strong>Tempo:</strong> <span id="time">0</span> segundos</p>
     <p><strong>Status:</strong> <span id="status">Parado</span></p>
     <p><strong>Pescando:</strong> <span id="fishing">Não</span></p>
@@ -67,12 +69,13 @@
     <button id="startGame">Iniciar Jogo</button>
 
     <script type="module">
-        import { getTime, getIsRunning, getIsFishing, getFishQuantity, setIsRunning, setIsFishing, incrementFishQuantity, setTime } from './src/gameState.js';
+        import { getTime, getIsRunning, getIsFishing, getFishQuantity, getFishingProgress, setIsRunning, setIsFishing, incrementFishQuantity, setTime } from './src/gameState.js';
 
         const timeEl = document.getElementById("time");
         const statusEl = document.getElementById("status");
         const fishingEl = document.getElementById("fishing");
         const fishQuantityEl = document.getElementById("fishQuantity");
+        const barEl = document.getElementById("bar");
 
         document.getElementById("startGame").addEventListener("click", () => {
             setIsRunning(true);
@@ -85,6 +88,8 @@
             statusEl.innerText = getIsRunning() ? "Rodando" : "Parado";
             fishingEl.innerText = getIsFishing() ? "Sim" : "Não";
             fishQuantityEl.innerText = getFishQuantity();
+            var width = 540*(getFishingProgress()*0.01);
+            bar.style.width = width.toString() + 'px';
         }
 
         setInterval(updateHUD, 100);

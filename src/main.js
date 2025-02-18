@@ -137,7 +137,7 @@ function main() {
                 if(input.keysPressed[67] == true){
                     gameState.incrementFishingProgress(0.5);
                 }//letra c
-                if(gameState.getFishingProgress() <= 0 || gameState.getFishingProgress() >= 100){
+                if(gameState.getFishingProgress() <= 30 || gameState.getFishingProgress() >= 100){
                     gameState.setIsFishing(false);
                     console.log("você perdeu o peixe, seu inútil!!");
                 }
@@ -148,6 +148,7 @@ function main() {
             if(gameState.getIsFishing() == true && fishingEnd - fishingStart >= 25){
                 gameState.setIsFishing(false);
                 gameState.incrementFishQuantity();
+                gameState.setFishingProgress(50);
                 console.log("você pescou mais um peixe!");
                 console.log("você não está mais pescando...");
             }
@@ -156,8 +157,6 @@ function main() {
                 console.log("Game is finished, and so are you...");
                 gameState.setIsRunning(false);
             }
-
-
 
         }
         requestAnimationFrame(render);
