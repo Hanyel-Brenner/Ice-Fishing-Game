@@ -185,6 +185,15 @@ export function rotateObjectMatrixX(object, rotationAngle, translation2){
     return matrix;
 }
 
+export function rotateObjectMatrixZ(object, rotationAngle, translation2){
+    var translation = [ -object[0], -object[1], -object[2]]
+    var matrix = mat4.create();
+    mat4.translate(matrix, matrix,translation2);
+    mat4.rotateZ(matrix, matrix,rotationAngle);
+    mat4.translate(matrix, matrix, translation);
+    return matrix;
+}
+
 export function applyTransformation(object, transfMatrix){
     var len = object.length;
     var newObject = [];

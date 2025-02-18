@@ -2,7 +2,7 @@ import { colors } from "./colors.js";
 import { GameObject } from "./gameObject.js";
 import { setCircleColor } from "./shapes2d.js";
 import {setLandscapeVertices, setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setCircleVertices3d, setEllipsoidVertices, setEllipsoidColor, setRectangle3dVertices} from './shapes3d.js'
-import { degToRad, rotateObjectMatrixY, rotateObjectMatrixX ,applyTransformation, assembleArray } from "./utils.js";
+import { degToRad, rotateObjectMatrixY, rotateObjectMatrixX , rotateObjectMatrixZ ,applyTransformation, assembleArray } from "./utils.js";
 
 const N_OF_CIRCLE_POINTS = 1000;
 //This rod initial position will be defined as a reference point for the rod and will be used mainly to determine in the beggining
@@ -12,12 +12,12 @@ const ROD_INITIAL_POSITION = [0.9, 0.0,-0.8];
 export const POND_RADIUS = 0.8;
 
 
-const color = [[1.0, 0.0, 0.0],  //front, red
-                [0.0, 1.0, 0.0],  //left, green
-                [0.0 ,0.0, 1.0], //back, blue
-                [1.0, 1.0, 0.0],    //right, yellow
-                [0.0, 1.0, 1.0],    //top , purple
-                [1.0, 0.0, 1.0]];   //bottom, cyan
+const color = [[0.54, 0.27, 0.07],  //front, red
+                [0.54, 0.27, 0.07],  //left, green
+                [0.54, 0.27, 0.07], //back, blue
+                [0.54, 0.27, 0.07],    //right, yellow
+                [0.54, 0.27, 0.07],    //top , purple
+                [0.54, 0.27, 0.07]];   //bottom, cyan
 
 const color2 = [[0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
@@ -26,15 +26,15 @@ const color2 = [[0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87]];
 
-const colorFin = [[1.0, 0.65, 0.0],
-                  [1.0, 0.65, 0.0],
-                  [1.0, 0.65, 0.0],
-                  [1.0, 0.65, 0.0],
-                  [1.0, 0.65, 0.0],
-                  [1.0, 0.65, 0.0]];
+const colorFin = [[0.85, 0.65, 0.0],
+                  [0.85, 0.65, 0.0],
+                  [0.85, 0.65, 0.0],
+                  [0.85, 0.65, 0.0],
+                  [0.85, 0.65, 0.0],
+                  [0.85, 0.65, 0.0]];
 
 /*CUBE DATA*/
-var cubePosition = setCubeVertices(0.5);
+var cubePosition = setCubeVertices(0.3);
 var cubeColor = setCubeColors(color);
 var cubeNormal = setCubeNormals();
 /* LANDSCAPE DATA*/
@@ -61,14 +61,29 @@ var pondColor = setCircleColor(colors.blue, N_OF_CIRCLE_POINTS);
 
 /* FISH DATA */
 var fishPosition = setEllipsoidVertices(5, 8, 0.3, 0.1, 0.1);
-var fishColor = setEllipsoidColor(colors.red, fishPosition.length);
+var fishColor = setEllipsoidColor(colors.brownish, fishPosition.length);
 
-var fishCaudialFin1Position = setRectangle3dVertices(0.08, 0.06, 0.03);
+var fishCaudialFin1Position = setRectangle3dVertices(0.08, 0.03, 0.01);
 var fishCaudialFin1Color = setCubeColors(colorFin);
 
-var fishCaudialFin2Position = setRectangle3dVertices(0.08, 0.06, 0.03);
+var fishCaudialFin2Position = setRectangle3dVertices(0.08, 0.03, 0.01);
 var fishCaudialFin2Color = setCubeColors(colorFin);
 
+var fishDorsalFinPosition = setRectangle3dVertices(0.06, 0.15, 0.01);
+var fishDorsalFinColor = setCubeColors(colorFin);
+
+var fishPectoralFin1Position = setRectangle3dVertices(0.06, 0.08, 0.01);
+var fishPectoralFin1Color = setCubeColors(colorFin);
+
+var fishPectoralFin2Position = setRectangle3dVertices(0.06, 0.08, 0.01);
+var fishPectoralFin2Color = setCubeColors(colorFin);
+
+// Adicionando olhos ao peixe
+var fishEye1Position = setCircleVertices3d([0.0, 0.0, 0.0], 0.02, N_OF_CIRCLE_POINTS); // Olho esquerdo
+var fishEye1Color = setCircleColor(colors.greenish, N_OF_CIRCLE_POINTS);
+
+var fishEye2Position = setCircleVertices3d([0.0, 0.0, 0.0], 0.02, N_OF_CIRCLE_POINTS); // Olho direito
+var fishEye2Color = setCircleColor(colors.greenish, N_OF_CIRCLE_POINTS);
 
 /*GAME OBJECTS*/
 var landscape = new GameObject();
@@ -85,6 +100,8 @@ rod.setColorArray(assembleArray([rodColor, rodReelColor]));
 
 var cube = new GameObject();
 cube.setReferencePoint([0.0, 0.0, 0.0]);
+var cubeMatrix = rotateObjectMatrixY(cube.getReferencePoint(),  degToRad(0) ,[-1.5, 0.0 ,0.0]);
+cubePosition = applyTransformation(cubePosition, cubeMatrix);
 cube.setPositionArray(cubePosition);
 cube.setColorArray(cubeColor);
 cube.setNormalArray(cubeNormal);
@@ -97,16 +114,55 @@ pond.setColorArray(pondColor);
 
 var fish = new GameObject();
 fish.setReferencePoint([0.0, 0.0, 0.0]);
+
+// Aplicar transformações para posicionar o corpo do peixe
 var fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.8, 0.8, -1.0]);
 fishPosition = applyTransformation(fishPosition, fishMatrix);
 
-fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.6, 0.8 ,-1.0]);
+// Aplicar transformações para posicionar as barbatanas caudais
+fishMatrix = rotateObjectMatrixZ(fish.getReferencePoint(), degToRad(-34), [0.54, 0.8, -1.0]);
 fishCaudialFin1Position = applyTransformation(fishCaudialFin1Position, fishMatrix);
+fishMatrix = rotateObjectMatrixZ(fish.getReferencePoint(), degToRad(34), [0.54, 0.8, -1.0]);
+fishCaudialFin2Position = applyTransformation(fishCaudialFin2Position, fishMatrix);
 
-fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.6, 0.8 ,-1.0]);
-fishCaudialFin1Position = applyTransformation(fishCaudialFin1Position, fishMatrix);
+// Aplicar transformações para posicionar a barbatana dorsal
+fishMatrix = rotateObjectMatrixZ(fish.getReferencePoint(), degToRad(90), [0.77, 0.87, -1.0]);
+fishDorsalFinPosition = applyTransformation(fishDorsalFinPosition, fishMatrix);
 
-fish.setPositionArray(assembleArray([fishPosition, fishCaudialFin1Position]));
-fish.setColorArray(assembleArray([fishColor, fishCaudialFin1Color]));
+// Aplicar transformações para posicionar as barbatanas peitorais
+fishMatrix = rotateObjectMatrixZ(fish.getReferencePoint(), degToRad(45), [0.81, 0.74, -1.05]);
+fishPectoralFin1Position = applyTransformation(fishPectoralFin1Position, fishMatrix);
+fishMatrix = rotateObjectMatrixZ(fish.getReferencePoint(), degToRad(-45), [0.81, 0.74, -0.95]);
+fishPectoralFin2Position = applyTransformation(fishPectoralFin2Position, fishMatrix);
 
-export {landscape , cube, rod, pond, fish}
+// Aplicar transformações para posicionar os olhos
+fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(-13), [0.97, 0.81, -1.09]);
+fishEye1Position = applyTransformation(fishEye1Position, fishMatrix); // Olho esquerdo
+fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(13), [0.97, 0.81, -0.91]);
+fishEye2Position = applyTransformation(fishEye2Position, fishMatrix); // Olho direito
+
+// Montar o array de posições e cores para o peixe
+fish.setReferencePoint([0.8, 0.8, -1.0]);
+fish.setPositionArray(assembleArray([
+    fishPosition,
+    fishCaudialFin1Position,
+    fishCaudialFin2Position,
+    fishDorsalFinPosition,
+    fishPectoralFin1Position,
+    fishPectoralFin2Position,
+    fishEye1Position, // Adicionando olho esquerdo
+    fishEye2Position  // Adicionando olho direito
+]));
+
+fish.setColorArray(assembleArray([
+    fishColor,
+    fishCaudialFin1Color,
+    fishCaudialFin2Color,
+    fishDorsalFinColor,
+    fishPectoralFin1Color,
+    fishPectoralFin2Color,
+    fishEye1Color, // Cor do olho esquerdo
+    fishEye2Color  // Cor do olho direito
+]));
+
+export {landscape, cube, rod, pond, fish};
