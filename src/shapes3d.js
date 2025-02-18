@@ -53,7 +53,6 @@ export function setLandscapeVertices( len, h){
       return vertexData;
 }
 
-
 export function setCubeVertices(n){
     const vertexData = [
         // Front
@@ -103,6 +102,59 @@ export function setCubeVertices(n){
         -n, -n, n,
         n, -n, -n,
         -n, -n, -n,
+      ];
+      return vertexData;
+}
+
+export function setRectangle3dVertices( len, h, w){
+    const vertexData = [
+        // Front
+        len, h, w,
+        len, -h, w,
+        -len, h, w,
+        -len, h, w,
+        len, -h, w,
+        -len, -h, w,
+    
+        // Left
+        -len, h, w,
+        -len, -h, w,
+        -len, h, -w,
+        -len, h, -w,
+        -len, -h, w,
+        -len, -h, -w,
+    
+        // Back
+        -len, h, -w,
+        -len, -h, -w,
+        len, h, -w,
+        len, h, -w,
+        -len, -h, -w,
+        len, -h, -w,
+    
+        // Right
+        len, h, -w,
+        len, -h, -w,
+        len, h, w,
+        len, h, w,
+        len, -h, w,
+        len, -h, -w,
+    
+        // Top
+        len, h, w,
+        len, h, -w,
+        -len, h, w,
+        -len, h, w,
+        len, h, -w,
+        -len, h, -w,
+    
+        // Bottom
+        len, -h, w,
+        len, -h, -w,
+        -len, -h, w,
+        -len, -h, w,
+        len, -h, -w,
+        -len, -h, -w,
       ];
       return vertexData;
 }
@@ -276,7 +328,7 @@ export function setCircleVertices3d(center, radius, numberOfPoints){
     return vertices;
   }
 
-export function setEllipsoidVertices(latitudeBands, longitudeBands, radius){
+export function setEllipsoidVertices(latitudeBands, longitudeBands, radiusX, radiusY, radiusZ){
     let vertices = [];
     for (let latNumber = 0; latNumber <= latitudeBands; latNumber++) {
         let theta = latNumber * Math.PI / latitudeBands;
@@ -288,9 +340,9 @@ export function setEllipsoidVertices(latitudeBands, longitudeBands, radius){
             let sinPhi = Math.sin(phi);
             let cosPhi = Math.cos(phi);
 
-            let x = radius * cosPhi * sinTheta;
-            let y = radius * cosTheta;
-            let z = radius * sinPhi * sinTheta;
+            let x = radiusX * cosPhi * sinTheta;
+            let y = radiusY * cosTheta;
+            let z = radiusZ * sinPhi * sinTheta;
 
             vertices.push(x, y, z);
         }
@@ -319,7 +371,7 @@ export function setEllipsoidVertices(latitudeBands, longitudeBands, radius){
 
 export function setEllipsoidColor(color, vertexArrayLength){
     var colorArray = [];
-    for(let i=0; i<(vertexArrayLength * 18/3 ); i++){
+    for(let i=0; i<(vertexArrayLength / 3 ); i++){
         colorArray.push(color[0], color[1], color[2]);
     }
     return colorArray;

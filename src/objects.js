@@ -1,7 +1,7 @@
 import { colors } from "./colors.js";
 import { GameObject } from "./gameObject.js";
 import { setCircleColor } from "./shapes2d.js";
-import {setLandscapeVertices, setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setCircleVertices3d, setEllipsoidVertices, setEllipsoidColor} from './shapes3d.js'
+import {setLandscapeVertices, setCubeVertices, setCubeColors, setCubeNormals, setCylinderVertices, setCylinderColor, setCircleVertices3d, setEllipsoidVertices, setEllipsoidColor, setRectangle3dVertices} from './shapes3d.js'
 import { degToRad, rotateObjectMatrixY, rotateObjectMatrixX ,applyTransformation, assembleArray } from "./utils.js";
 
 const N_OF_CIRCLE_POINTS = 1000;
@@ -25,6 +25,13 @@ const color2 = [[0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87],
                 [0.87, 0.87, 0.87]];
+
+const colorFin = [[1.0, 0.65, 0.0],
+                  [1.0, 0.65, 0.0],
+                  [1.0, 0.65, 0.0],
+                  [1.0, 0.65, 0.0],
+                  [1.0, 0.65, 0.0],
+                  [1.0, 0.65, 0.0]];
 
 /*CUBE DATA*/
 var cubePosition = setCubeVertices(0.5);
@@ -53,9 +60,17 @@ var pondPosition = setCircleVertices3d([0.5 ,0.5, -1.8], POND_RADIUS , N_OF_CIRC
 var pondColor = setCircleColor(colors.blue, N_OF_CIRCLE_POINTS);
 
 /* FISH DATA */
-var fishPosition = setEllipsoidVertices(30, 30, 0.8);
+var fishPosition = setEllipsoidVertices(5, 8, 0.3, 0.1, 0.1);
 var fishColor = setEllipsoidColor(colors.red, fishPosition.length);
 
+var fishCaudialFin1Position = setRectangle3dVertices(0.08, 0.06, 0.03);
+var fishCaudialFin1Color = setCubeColors(colorFin);
+
+var fishCaudialFin2Position = setRectangle3dVertices(0.08, 0.06, 0.03);
+var fishCaudialFin2Color = setCubeColors(colorFin);
+
+
+/*GAME OBJECTS*/
 var landscape = new GameObject();
 landscape.setReferencePoint([0.0, 0.0, 0.0]);
 landscape.setPositionArray(landscapePosition);
@@ -84,7 +99,14 @@ var fish = new GameObject();
 fish.setReferencePoint([0.0, 0.0, 0.0]);
 var fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.8, 0.8, -1.0]);
 fishPosition = applyTransformation(fishPosition, fishMatrix);
-fish.setPositionArray(fishPosition);
-fish.setColorArray(fishColor);
+
+fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.6, 0.8 ,-1.0]);
+fishCaudialFin1Position = applyTransformation(fishCaudialFin1Position, fishMatrix);
+
+fishMatrix = rotateObjectMatrixY(fish.getReferencePoint(), degToRad(0), [0.6, 0.8 ,-1.0]);
+fishCaudialFin1Position = applyTransformation(fishCaudialFin1Position, fishMatrix);
+
+fish.setPositionArray(assembleArray([fishPosition, fishCaudialFin1Position]));
+fish.setColorArray(assembleArray([fishColor, fishCaudialFin1Color]));
 
 export {landscape , cube, rod, pond, fish}
