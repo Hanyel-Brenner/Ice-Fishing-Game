@@ -2,6 +2,7 @@ export var gameState = {
     isRunning : false,
     isFishing : false,
     fishQuantity : 0,
+    fishingProgress : 0,
     time : 0
 }
 
@@ -13,12 +14,20 @@ export function setIsFishing(valor){
     gameState.isFishing = valor
 }
 
+export function setFishingProgress(valor){
+    gameState.fishingProgress = valor;
+}
+
+export function incrementFishingProgress(valor){
+    gameState.fishingProgress += valor;
+}
+
 export function setTime(){
     setInterval( () => {gameState.time += 1}, 1000)
 }
 
-export function setFishQuantity(valor){
-    gameState.fishQuantity = valor
+export function incrementFishQuantity(){
+    gameState.fishQuantity += 1;
 }
 
 export function getIsRunning(){
@@ -30,7 +39,11 @@ export function getIsFishing(){
 }
 
 export function getFishQuantity(){
-    return gameState.fishQuantity
+    return gameState.fishQuantity;
+}
+
+export function getFishingProgress(){
+    return gameState.fishingProgress;
 }
 
 export function getTime(){

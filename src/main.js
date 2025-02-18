@@ -6,6 +6,7 @@ import { renderCylinder, renderCube, renderObject } from './renderFunctions.js';
 import {colors} from './colors.js'
 import * as gameState from './gameState.js'
 import {landscape, cube, rod, pond, fish, POND_RADIUS} from './objects.js'
+import * as input from './input.js' 
 
 gameState.setTime();
 
@@ -89,38 +90,75 @@ function main() {
     var cameraDir;
     var rodDir;
 
+    var colPoint = [0.0, 0.0, 0.0];
+    var fishingStart = gameState.getTime();
+    var fishingEnd = gameState.getTime();
+
     function render(){
 
-        camera.updateCamera();
-        p0 = camera.getCameraPosition();
-        pRef = camera.getReferencePoint();
-        cameraDir = camera.getDirection();
-        rodDir = rod.getReferenceDirection();   
-        trackRod(cameraDir, rodDir, rod, p0);
-        var collision = camera.detectCollision();
-        var insidePond = isInsidePond(collision.point, pond.getReferencePoint(), POND_RADIUS);
+        if(gameState.getIsRunning()){
+            camera.updateCamera();
+            p0 = camera.getCameraPosition();
+            pRef = camera.getReferencePoint();
+            cameraDir = camera.getDirection();
+            rodDir = rod.getReferenceDirection();   
+            trackRod(cameraDir, rodDir, rod, p0);
+            var collision = camera.detectCollision();
+            var insidePond = isInsidePond(collision.point, pond.getReferencePoint(), POND_RADIUS);
 
-        matrix = getFinalMatrix(p0, pRef, V, xw_min, xw_max, yw_min, yw_max, z_near, z_far)
-        gl.uniformMatrix4fv(transfMatrixLoc, false, matrix);
-        gl.uniform3fv(lightDirectionLoc, light);
+            matrix = getFinalMatrix(p0, pRef, V, xw_min, xw_max, yw_min, yw_max, z_near, z_far)
+            gl.uniformMatrix4fv(transfMatrixLoc, false, matrix);
+            gl.uniform3fv(lightDirectionLoc, light);
 
-        gl.clearColor(0.51, 0.78, 0.89, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.clearColor(0.51, 0.78, 0.89, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        renderCube(gl, positionBuffer, colorBuffer, landscape.getPositionArray(), landscape.getColorArray());
-        renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
-        renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
-        renderObject(gl, positionBuffer, colorBuffer, pond.getPositionArray(), pond.getColorArray());
-        renderObject(gl, positionBuffer, colorBuffer, fish.getPositionArray(), fish.getColorArray());
+            renderCube(gl, positionBuffer, colorBuffer, landscape.getPositionArray(), landscape.getColorArray());
+            renderCube(gl, positionBuffer, colorBuffer, cube.getPositionArray(), cube.getColorArray());
+            renderObject(gl, positionBuffer, colorBuffer, rod.getPositionArray(), rod.getColorArray());
+            renderObject(gl, positionBuffer, colorBuffer, pond.getPositionArray(), pond.getColorArray());
+            renderObject(gl, positionBuffer, colorBuffer, fish.getPositionArray(), fish.getColorArray());
 
-        if(insidePond && collision.collided == true){
-            gameState.setIsFishing(true);
-            var rodPos = rod.getPositionArray();
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([rodPos[0], rodPos[1], rodPos[2], collision.point[0], collision.point[1], collision.point[2] ]), gl.STATIC_DRAW);
-            gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),gl.STATIC_DRAW);
-            gl.drawArrays(gl.LINES, 0, 2);
+            if(insidePond && collision.collided == true && gameState.getIsFishing() == false){
+                gameState.setIsFishing(true);
+                gameState.setFishingProgress(50); //min is 0 and max is 100;
+                fishingStart = gameState.getTime();
+                colPoint = collision.point;
+            }
+
+            if(gameState.getIsFishing() == true){
+                var rodPos = rod.getPositionArray();
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([rodPos[0], rodPos[1], rodPos[2], colPoint[0], colPoint[1], colPoint[2] ]), gl.STATIC_DRAW);
+                gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),gl.STATIC_DRAW);
+                gl.drawArrays(gl.LINES, 0, 2);
+                gameState.incrementFishingProgress(-0.1);
+                if(input.keysPressed[67] == true){
+                    gameState.incrementFishingProgress(0.5);
+                }//letra c
+                if(gameState.getFishingProgress() <= 0 || gameState.getFishingProgress() >= 100){
+                    gameState.setIsFishing(false);
+                    console.log("você perdeu o peixe, seu inútil!!");
+                }
+                fishingEnd = gameState.getTime();
+                console.log(gameState.getFishingProgress());
+            }
+
+            if(gameState.getIsFishing() == true && fishingEnd - fishingStart >= 25){
+                gameState.setIsFishing(false);
+                gameState.incrementFishQuantity();
+                console.log("você pescou mais um peixe!");
+                console.log("você não está mais pescando...");
+            }
+
+            if(gameState.getTime() >= 240) {
+                console.log("Game is finished, and so are you...");
+                gameState.setIsRunning(false);
+            }
+
+
+
         }
         requestAnimationFrame(render);
     }
