@@ -8,8 +8,6 @@ import * as gameState from './gameState.js'
 import {landscape, cube, rod, pond, fish, POND_RADIUS} from './objects.js'
 import * as input from './input.js' 
 
-gameState.setTime();
-
 var light = [0.0, 0.5, -0.5];
 
 function main() {

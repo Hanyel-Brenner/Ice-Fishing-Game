@@ -80,7 +80,6 @@
         document.getElementById("startGame").addEventListener("click", () => {
             setIsRunning(true);
             setTime(); 
-            updateHUD();
         });
 
         function updateHUD() {
@@ -92,7 +91,7 @@
             bar.style.width = width.toString() + 'px';
         }
 
-        setInterval(updateHUD, 100);
+        setInterval(updateHUD, 200);
     </script>
 </body>
 </html>
