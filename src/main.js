@@ -8,7 +8,7 @@ import * as gameState from './gameState.js'
 import {landscape, cube, rod, pond, fish, POND_RADIUS} from './objects.js'
 import * as input from './input.js' 
 
-gameState.setTime();
+//gameState.setTime();
 
 var light = [0.0, 0.0, -0.5];
 
@@ -72,12 +72,14 @@ function main() {
     const transfMatrixLoc = gl.getUniformLocation(program, 'matrix');
     gl.uniformMatrix4fv(transfMatrixLoc, false, mat4.create());
 
+ 
+    const lightDirection = vec3.fromValues(0.0, 1.0, 0.0); // Exemplo de direção da luz (apontando para cima)
     const lightDirectionLoc = gl.getUniformLocation(program, 'uLightDirection');
-    gl.uniform3fv(lightDirectionLoc, light);
-
+    gl.uniform3fv(lightDirectionLoc, lightDirection);
+    
     const useNormalsLoc = gl.getUniformLocation(program, 'useNormals');
-    gl.uniform1i(useNormalsLoc, 0);
-
+    gl.uniform1i(useNormalsLoc, 1); // Ativar o uso de normais
+    
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);

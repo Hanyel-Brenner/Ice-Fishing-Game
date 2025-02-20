@@ -7,9 +7,8 @@ export function renderObject(gl, positionBuffer, colorBuffer, normalBuffer, vert
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal), gl.STATIC_DRAW);
     }
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length*6);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3); // Corrigido para vertices.length / 3
 }
-
 export function renderSquare(gl, positionBuffer, colorBuffer, rectangleData, rectangleColor){
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     setRectangleVertices(gl, rectangleData[0], rectangleData[1], rectangleData[2], rectangleData[3]);

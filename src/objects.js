@@ -102,6 +102,17 @@ rod.setReferenceDirection([0.0, 0.0, 1.0]);
 rod.setPositionArray(assembleArray([rodPosition, rodReelPosition]));
 rod.setColorArray(assembleArray([rodColor, rodReelColor]));
 rod.setNormalArray(null);
+var rodNormal = [];
+for (let i = 0; i < rodPosition.length / 3; i++) {
+    let x = rodPosition[i * 3];
+    let y = rodPosition[i * 3 + 1];
+    let z = rodPosition[i * 3 + 2];
+    let normal = vec3.fromValues(x, y, z);
+    vec3.normalize(normal, normal);
+    rodNormal.push(normal[0], normal[1], normal[2]);
+}
+
+rod.setNormalArray(rodNormal);
 
 var cube = new GameObject();
 cube.setReferencePoint([0.0, 0.0, 0.0]);
@@ -171,6 +182,17 @@ fish.setColorArray(assembleArray([
     fishEye2Color  // Cor do olho direito
 ]));
 
-fish.setNormalArray(null);
+var fishNormal = [];
+for (let i = 0; i < fishPosition.length / 3; i++) {
+    let x = fishPosition[i * 3];
+    let y = fishPosition[i * 3 + 1];
+    let z = fishPosition[i * 3 + 2];
+    let normal = vec3.fromValues(x, y, z);
+    vec3.normalize(normal, normal);
+    fishNormal.push(normal[0], normal[1], normal[2]);
+}
+
+fish.setNormalArray(fishNormal);
+
 
 export {landscape, cube, rod, pond, fish};
